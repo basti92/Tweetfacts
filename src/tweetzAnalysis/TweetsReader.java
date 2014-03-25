@@ -171,11 +171,11 @@ public class TweetsReader extends Observable implements TweetsProvider,
     /**
      * Closes the connection to the server.
      */
-//    private void closeTwitterStream() {
-//        if (getTwitterStream() != null) {
-//           getTwitterStream().shutdown();
-//        }
-//    }
+    private void closeTwitterStream() {
+        if (getTwitterStream() != null) {
+           getTwitterStream().shutdown();
+        }
+    }
 
     // Getters and Setters
 
