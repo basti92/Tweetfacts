@@ -48,7 +48,7 @@ public class Main implements Observer {
         // state determines who (tweetzAnalysis.TweetsProvider or tweetzAnalysis.Timer-Thread) invoked that
         // method
         int state;
-        state = (int) arg1;
+        state =  (Integer)arg1;
         TweetsProvider provider = TweetsReader.getInstance();
         switch (state) {
             case TweetsReader.LOADED_TWEETS_AVAILABLE:
