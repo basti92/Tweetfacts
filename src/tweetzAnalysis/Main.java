@@ -26,13 +26,13 @@ public class Main implements Observer {
         // register Observer that is notified whenever a sample of Tweets is
         // available
         provider.addObserver(main);
-        // initialize the tweetzAnalysis.TweetsProvider with the "login" data
-        provider.init("*******************",
-                "********************",
-                "****************",
-                "*************");
+        // initialize the tweetzAnalysis.TweetsProvider with the "login" data , TWEETFACTZ
+        provider.init("gURk1pnbKhtE7fT6lZEU5g",
+                "HdVDK0yOO59kzyjG7iBEbp5Ic6g3wE8qvXjprokC9ko",
+                "2384961332-lDTNArIrRvIYvliCkKa2S5nwziuE73KUMjr6nHG",
+                "BNDLic7yXJ0teMwj1UCv3skSV7VtmSEWKUMGxWmwMm1o9");
         // initialize a query used to filter the incoming data stream
-        Query query = new Query("AcDc");
+        Query query = new Query("Obama");
         // set language to filter
         query.setLang("en");
         // start loading the samples from the server...
