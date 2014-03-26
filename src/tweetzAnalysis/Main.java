@@ -12,7 +12,7 @@ public class Main implements Observer {
     /**
      * Total number of requests to the servers of Twitter
      */
-    private int requests = 1;
+    private int requests = 10;
     /**
      * number of current request
      */
@@ -32,7 +32,7 @@ public class Main implements Observer {
                 "2384961332-lDTNArIrRvIYvliCkKa2S5nwziuE73KUMjr6nHG",
                 "BNDLic7yXJ0teMwj1UCv3skSV7VtmSEWKUMGxWmwMm1o9");
         // initialize a query used to filter the incoming data stream
-        Query query = new Query("Obama");
+        Query query = new Query("Obama:)"); // " " wie Oder ;  "-" ohne
         // set language to filter
         query.setLang("en");
         // start loading the samples from the server...
