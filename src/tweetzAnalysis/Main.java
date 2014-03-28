@@ -32,7 +32,7 @@ public class Main implements Observer {
                 "2384961332-lDTNArIrRvIYvliCkKa2S5nwziuE73KUMjr6nHG",
                 "BNDLic7yXJ0teMwj1UCv3skSV7VtmSEWKUMGxWmwMm1o9");
         // initialize a query used to filter the incoming data stream
-        Query query = new Query("Putin"); // " " wie Oder ;  "-" ohne
+        Query query = new Query("Twitter"); // " " wie Oder ;  "-" ohne
         // set language to filter
         query.setLang("en");
         // start loading the samples from the server...
@@ -63,7 +63,7 @@ public class Main implements Observer {
                     String userData = "Tweet ist null..";
                     if (tweet.getUser() != null) {
                         userData = "\nAuthor: "+ tweet.getUser().getName() +"\nPlace: "+ tweet.getUser().getLocation() +
-                                "\nLang: "+ tweet.getUser().getLang() +"\n";
+                                "\nLang: "+ tweet.getUser().getLang() + "\nFollowers: " + tweet.getUser().getFollowersCount()+"\n";
                     }
                     System.out.println("TweetId: "+ tweet.getId() +"\nText: "+ tweet.getText() + "\nDatum: " + tweet.getCreatedAt() + userData);
                 } else {
