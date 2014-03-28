@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 
+//twitter4j
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.RateLimitStatus;
@@ -27,31 +28,27 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TweetsReader extends Observable implements TweetsProvider,
         RateLimitStatusListener {
 
-    /**
-     * Storage for the Tweets
-     */
-    private Status[] statuses;
 
-    public static final int MAX_TWEETS_PER_QUERY = 100;
+    //constants
+    public static final int MAX_TWEETS_PER_QUERY = 1500;
     public static final int MIN_TWEETS_PER_QUERY = 0;
+    public static final int MAX_NUMBER_OF_REQUESTS = 1500;
+    public static final int LOADED_TWEETS_AVAILABLE = 500;
+
+
     private int numberOfTweetsPerRequest = MAX_TWEETS_PER_QUERY;
 
-    public static final int MAX_NUMBER_OF_REQUESTS = 180;
-    public static final int LOADED_TWEETS_AVAILABLE = 2;
+    private Status[] statuses; // Storage for the Tweets
 
-    /**
-     * Connection to Twitter public streaming endpoint
-     */
-    private Twitter twitterStream;
-    /**
-     * holdOn == true => statuses list is filled with
-     * -------------
-     * Tweets holdOn == false => currently no Tweets are recorded
-     */
-    private boolean holdOn;
+    private Twitter twitterStream; //Connection to Twitter public streaming endpoint
+
+    private boolean holdOn;// holdOn == true => statuses list is filled with, Tweets holdOn == false => currently no Tweets are recorded
 
     private static TweetsReader instance;
 
+
+
+    //Constructor, initializes Status array
     private TweetsReader() {
         statuses = new Status[MAX_NUMBER_OF_REQUESTS * MAX_TWEETS_PER_QUERY];
     }
@@ -65,12 +62,14 @@ public class TweetsReader extends Observable implements TweetsProvider,
 
     // Implementation of interface tweetzAnalysis.TweetsProvider
 
+    //establish connection to twitter
     @Override
     public void init(String consumerKey, String consumerSecret,
                      String accessToken, String accessTokenSecret) {
-        if (getTwitterStream() != null) {
+        if (getTwitterStream() != null) { //cancel if connections is already established
             return;
         }
+
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true).setOAuthConsumerKey(consumerKey)
                 .setOAuthConsumerSecret(consumerSecret)
@@ -80,20 +79,31 @@ public class TweetsReader extends Observable implements TweetsProvider,
         openTwitterStream(cb);
     }
 
+
     public void loadSample(Query query) throws TwitterException {
+
         setHoldOn(false);
+
+        //check connection
         if (getTwitterStream() == null) {
             return;
         }
+
         // reset old values retrieved from the previous query
         for (int i = 0; i < statuses.length; i++) {
             statuses[i] = null;
         }
+
+
         int pos = 0;
         int oldSize = 0;
+
+        //catch empty query
         if (query == null) {
             query = createDefaultQuery();
         }
+
+
         Set<Long> set = new HashSet<Long>();
         query.setCount(getNumberOfTweetsPerRequest());
         try {
@@ -101,20 +111,23 @@ public class TweetsReader extends Observable implements TweetsProvider,
             if (!isHoldOn()) {
                 result = getTwitterStream().search(query);
             }
+
             if (result == null) {
                 return;
             }
             do {
                 List<Status> tweets = result.getTweets();
+                //Liste mit Tweets durchlaufen und in Status Array abspeichern
                 for (Status tweet : tweets) {
                     long id = tweet.getId();
                     oldSize = set.size();
-                    set.add(id);
+                    set.add(id); // IDs werden zu Menge set hinzugefügt
                     if (set.size() > oldSize) {
                         oldSize = set.size();
-                        statuses[pos++] = tweet;
+                        statuses[pos++] = tweet; //Tweets werden in Status Array gespeichert
                     }
                 }
+
                 // get tweets in the next page if any
                 query = result.nextQuery();
                 if (query != null) {
@@ -177,8 +190,10 @@ public class TweetsReader extends Observable implements TweetsProvider,
         }
     }
 
-    // Getters and Setters
 
+
+
+    // Getters and Setters
     private Twitter getTwitterStream() {
         return twitterStream;
     }

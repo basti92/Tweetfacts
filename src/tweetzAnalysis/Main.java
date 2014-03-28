@@ -12,7 +12,7 @@ public class Main implements Observer {
     /**
      * Total number of requests to the servers of Twitter
      */
-    private int requests = 10;
+    private int requests = 1500;
     /**
      * number of current request
      */
@@ -32,7 +32,7 @@ public class Main implements Observer {
                 "2384961332-lDTNArIrRvIYvliCkKa2S5nwziuE73KUMjr6nHG",
                 "BNDLic7yXJ0teMwj1UCv3skSV7VtmSEWKUMGxWmwMm1o9");
         // initialize a query used to filter the incoming data stream
-        Query query = new Query("Obama:)"); // " " wie Oder ;  "-" ohne
+        Query query = new Query("Putin"); // " " wie Oder ;  "-" ohne
         // set language to filter
         query.setLang("en");
         // start loading the samples from the server...
@@ -57,16 +57,15 @@ public class Main implements Observer {
                 // do something
                 int i = 0;
                 while (statuses[i] != null) {
-                    i++;
-                }
-                Status tweet = statuses[0];
+
+                Status tweet = statuses[i];
                 if (tweet != null) {
                     String userData = "Tweet ist null..";
                     if (tweet.getUser() != null) {
                         userData = "\nAuthor: "+ tweet.getUser().getName() +"\nPlace: "+ tweet.getUser().getLocation() +
                                 "\nLang: "+ tweet.getUser().getLang() +"\n";
                     }
-                    System.out.println("TweetId: "+ tweet.getId() +"\nText: "+ tweet.getText() + userData);
+                    System.out.println("TweetId: "+ tweet.getId() +"\nText: "+ tweet.getText() + "\nDatum: " + tweet.getCreatedAt() + userData);
                 } else {
                     System.out.println("Tweet ist Null..");
                 }
@@ -81,7 +80,7 @@ public class Main implements Observer {
                     // close data stream to Twitter..
                     provider.close();
                     System.exit(0);
-                }
+                }i++;}
                 break;
             case Timer.WAITING_FINISHED:
                 try {
