@@ -9,10 +9,12 @@ import twitter4j.TwitterException;
 
 public class Main implements Observer {
 
+
     /**
      * Total number of requests to the servers of Twitter
      */
     private int requests = 1500;
+    private static String searchfor = "";
     /**
      * number of current request
      */
@@ -32,7 +34,8 @@ public class Main implements Observer {
                 "2384961332-lDTNArIrRvIYvliCkKa2S5nwziuE73KUMjr6nHG",
                 "BNDLic7yXJ0teMwj1UCv3skSV7VtmSEWKUMGxWmwMm1o9");
         // initialize a query used to filter the incoming data stream
-        Query query = new Query("Twitter"); // " " wie Oder ;  "-" ohne
+        Main.searchfor = "Spielberg";
+        Query query = new Query(Main.searchfor); // " " wie Oder ;  "-" ohne
         // set language to filter
         query.setLang("en");
         // start loading the samples from the server...
@@ -69,7 +72,7 @@ public class Main implements Observer {
                 } else {
                     System.out.println("Tweet ist Null..");
                 }
-                System.out.println("Number of Tweets in lap "+ j +": "+ i);
+                //System.out.println("Number of Tweets in lap "+ j +": "+ i);
                 if (++j < requests) {
                     // call a new tweetzAnalysis.Timer Thread that will signal the update method
                     // (flag WAITING_FINISHED), if further Tweets
@@ -81,6 +84,7 @@ public class Main implements Observer {
                     provider.close();
                     System.exit(0);
                 }i++;}
+                System.out.println("\nNumber of found Tweets: "+ i);
                 break;
             case Timer.WAITING_FINISHED:
                 try {
@@ -89,7 +93,7 @@ public class Main implements Observer {
                     // WAITINIG_FINISHED has been signaled!
                     // That may cause an exception, because there is a 15 minute
                     // window to wait,
-                    Query query = new Query("AcDc");
+                    Query query = new Query(Main.searchfor);
                     query.setLang("en");
                     provider.loadSample(query);
                 } catch (TwitterException e) {
