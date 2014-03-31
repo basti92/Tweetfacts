@@ -1,8 +1,12 @@
 package tweetzAnalysis;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
+//import java.sql.Date;
 import twitter4j.Query;
 import twitter4j.Status;
 import twitter4j.TwitterException;
@@ -68,7 +72,7 @@ public class Main implements Observer {
                         userData = "\nAuthor: "+ tweet.getUser().getName() +"\nPlace: "+ tweet.getUser().getLocation() +
                                 "\nLang: "+ tweet.getUser().getLang() + "\nFollowers: " + tweet.getUser().getFollowersCount()+"\n";
                     }
-                    System.out.println("TweetId: "+ tweet.getId() +"\nText: "+ tweet.getText() + "\nDatum: " + tweet.getCreatedAt() + userData);
+                    System.out.println("TweetId: "+ tweet.getId() +"\nText: "+ tweet.getText() + "\nDatum: " + parseDateSQL(tweet.getCreatedAt()) + userData);
                 } else {
                     System.out.println("Tweet ist Null..");
                 }
@@ -120,6 +124,14 @@ public class Main implements Observer {
     }
 
 
+    public java.sql.Date parseDateSQL(java.util.Date datejava) {
+        java.sql.Date sqldate = new java.sql.Date(datejava.getTime());
+        return sqldate;
+    }
 
 }
+
+
+
+
 
