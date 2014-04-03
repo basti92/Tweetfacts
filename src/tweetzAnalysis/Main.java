@@ -1,15 +1,11 @@
 package tweetzAnalysis;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Observable;
-import java.util.Observer;
-
-//import java.sql.Date;
 import twitter4j.Query;
 import twitter4j.Status;
 import twitter4j.TwitterException;
+
+import java.util.Observable;
+import java.util.Observer;
 
 public class Main implements Observer {
 
@@ -55,6 +51,8 @@ public class Main implements Observer {
         // state determines who (tweetzAnalysis.TweetsProvider or tweetzAnalysis.Timer-Thread) invoked that
         // method
         int state;
+
+        MySqlAccess.connectToDatabase();
         state =  (Integer)arg1;
         TweetsProvider provider = TweetsReader.getInstance();
         switch (state) {
@@ -73,10 +71,18 @@ public class Main implements Observer {
                                 "\nLang: "+ tweet.getUser().getLang() + "\nFollowers: " + tweet.getUser().getFollowersCount()+"\n";
                     }
                     System.out.println("TweetId: "+ tweet.getId() +"\nText: "+ tweet.getText() + "\nDatum: " + parseDateSQL(tweet.getCreatedAt()) + userData);
+
+                //SAVE TWEETS INTO DATABASE
+//                    public static void saveTweets(long id, java.sql.Date date, String message, String lang, String user,
+//                    int Follower, String location, String query){
+                    MySqlAccess.saveTweets(tweet.getId(), (parseDateSQL(tweet.getCreatedAt())), tweet.getText(),
+                            tweet.getUser().getLang(), tweet.getUser().getName(), tweet.getUser().getFollowersCount(),
+                            tweet.getUser().getLocation(), Main.searchfor);
+                    System.out.println("\n\n\n");
                 } else {
                     System.out.println("Tweet ist Null..");
                 }
-                //System.out.println("Number of Tweets in lap "+ j +": "+ i);
+                System.out.println("Number of Tweets in lap "+ j +": "+ i);
                 if (++j < requests) {
                     // call a new tweetzAnalysis.Timer Thread that will signal the update method
                     // (flag WAITING_FINISHED), if further Tweets
@@ -89,6 +95,7 @@ public class Main implements Observer {
                     System.exit(0);
                 }i++;}
                 System.out.println("\nNumber of found Tweets: "+ i);
+
                 break;
             case Timer.WAITING_FINISHED:
                 try {
@@ -109,6 +116,7 @@ public class Main implements Observer {
                 }
                 break;
         }
+    MySqlAccess.close();
     }
 
     /**
