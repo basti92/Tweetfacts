@@ -63,7 +63,7 @@ public class TweetsReader extends Observable implements TweetsProvider,
     // Implementation of interface tweetzAnalysis.TweetsProvider
 
     //establish connection to twitter
-    @Override
+
     public void init(String consumerKey, String consumerSecret,
                      String accessToken, String accessTokenSecret) {
         if (getTwitterStream() != null) { //cancel if connections is already established
@@ -148,24 +148,24 @@ public class TweetsReader extends Observable implements TweetsProvider,
         return new Query(search);
     }
 
-    @Override
+
     public Status[] getSample() {
         // TODO Auto-generated method stub
         return statuses;
     }
 
-    @Override
+
     public void addObserver(Observer observer) {
         // TODO Auto-generated method stub
         super.addObserver(observer);
     }
 
-    @Override
-    public boolean close() {
-        // TODO Auto-generated method stub
-        closeTwitterStream();
-        return true;
-    }
+
+//    public boolean close() {
+//        // TODO Auto-generated method stub
+//        closeTwitterStream();
+//        return true;
+//    }
 
     // Helper methods
 
@@ -184,11 +184,11 @@ public class TweetsReader extends Observable implements TweetsProvider,
     /**
      * Closes the connection to the server.
      */
-    private void closeTwitterStream() {
-        if (getTwitterStream() != null) {
-           getTwitterStream().shutdown();
-        }
-    }
+//    private void closeTwitterStream() {
+//        if (getTwitterStream() != null) {
+//           getTwitterStream().shutdown();
+//        }
+//    }
 
 
 
@@ -214,13 +214,13 @@ public class TweetsReader extends Observable implements TweetsProvider,
         return numberOfTweetsPerRequest;
     }
 
-    @Override
+
     public void onRateLimitReached(RateLimitStatusEvent arg0) {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
+
     public void onRateLimitStatus(RateLimitStatusEvent arg0) {
         // TODO Auto-generated method stub
         RateLimitStatus rateLimit = arg0.getRateLimitStatus();
