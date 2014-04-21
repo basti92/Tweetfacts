@@ -45,7 +45,7 @@ public interface TweetsProvider {
     /**
      * Closes the connection to the server, file system, ...
      */
-    public boolean close();
+    //public boolean close();
 
     /**
      * Adds an Observer, which is updated when loading the samples has been
