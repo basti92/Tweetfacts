@@ -45,12 +45,21 @@ public class MySqlAccess {
             //System.out.println("Creating database...");
 
 
-            //String sql = "CREATE DATABASE IF NOT EXISTS test";
-            //stmt.executeUpdate(sql);
+            String sql = "CREATE DATABASE IF NOT EXISTS Tweets";
+            stmt.executeUpdate(sql);
 
-            //stmt.executeUpdate("CREATE TABLE IF NOT EXISTS Test.Personen (ID INT NOT NULL, Vorname VARCHAR(45) NOT NULL," +
-            //       " Name VARCHAR(45) NOT NULL, Geburtstag DATE NULL, PRIMARY KEY (ID))");
-
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS tweet.tweet(idTweet BIGINT(20) NOT NULL,"
+            +"Date DATE NOT NULL,"
+            +"Message MEDIUMTEXT NOT NULL,"
+            +"Language VARCHAR(45) NULL DEFAULT NULL,"
+            +"Author VARCHAR(45) NOT NULL,"
+            +"Follower INT(11) NOT NULL,"
+            +"Location VARCHAR(45) NULL DEFAULT NULL,"
+            +"Query VARCHAR(45) NOT NULL,"
+            +"Rating VARCHAR(45) NULL DEFAULT NULL,"
+            +"PRIMARY KEY (idTweet))"
+            +"ENGINE = InnoDB"
+            +"DEFAULT CHARACTER SET = utf8;");
 
             //stmt.executeUpdate("INSERT INTO Tweets.tweet (idTweet, Date, Message, Language, Author, Follower, Location, Query) VALUES (5, '1991-05-28', 'tweetmessage', 'en', 'Ich', 500, 'Klafu', 'no')");
             //stmt.executeUpdate("INSERT INTO Test.Personen (ID, Vorname, Name, Geburtstag) VALUES (5, 'Martin', 'Maier', '1991-05-28')");
@@ -79,8 +88,8 @@ public class MySqlAccess {
 
 
 
-           stmt.executeUpdate("INSERT INTO Tweets.tweet (idTweet, Date, Message, Language, Author, " +
-                   "Follower, Location, Query) VALUES ("+id+", '"+date+"', '"+message+"', '"+lang+"', '"+user+"', "+follower+", '"+location+"', '"+query+"')");
+           stmt.executeUpdate("INSERT INTO tweets.tweet (idTweet, Date, Message, Language, Author, " +
+                   "Follower, Location, Query, Rating) VALUES ("+id+", '"+date+"', '"+message+"', '"+lang+"', '"+user+"', "+follower+", '"+location+"', '"+query+"', 'NULL')");
 
 
 
