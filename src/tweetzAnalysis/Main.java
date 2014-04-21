@@ -1,9 +1,11 @@
 package tweetzAnalysis;
 
+import twitter4j.*;
 import twitter4j.Query;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -34,7 +36,7 @@ public class Main implements Observer {
                 "2384961332-lDTNArIrRvIYvliCkKa2S5nwziuE73KUMjr6nHG",
                 "BNDLic7yXJ0teMwj1UCv3skSV7VtmSEWKUMGxWmwMm1o9");
         // initialize a query used to filter the incoming data stream
-        Main.searchfor = "Spielberg";
+        Main.searchfor = "#Putin";
         Query query = new Query(Main.searchfor); // " " wie Oder ;  "-" ohne
         // set language to filter
         query.setLang("en");
@@ -45,7 +47,7 @@ public class Main implements Observer {
         provider.loadSample(query);
     }
 
-    @Override
+
     public void update(Observable arg0, Object arg1) {
         // TODO Auto-generated method stub
         // state determines who (tweetzAnalysis.TweetsProvider or tweetzAnalysis.Timer-Thread) invoked that
@@ -53,7 +55,7 @@ public class Main implements Observer {
         int state;
 
         MySqlAccess.connectToDatabase();
-        state =  (Integer)arg1;
+        state = (Integer) arg1;
         TweetsProvider provider = TweetsReader.getInstance();
         switch (state) {
             case TweetsReader.LOADED_TWEETS_AVAILABLE:
@@ -63,42 +65,72 @@ public class Main implements Observer {
                 int i = 0;
                 while (statuses[i] != null) {
 
-                Status tweet = statuses[i];
-                if (tweet != null) {
-                    String userData = "Tweet ist null..";
-                    if (tweet.getUser() != null) {
-                        userData = "\nAuthor: "+ tweet.getUser().getName() +"\nPlace: "+ tweet.getUser().getLocation() +
-                                "\nLang: "+ tweet.getUser().getLang() + "\nFollowers: " + tweet.getUser().getFollowersCount()+"\n";
-                    }
-                    System.out.println("TweetId: "+ tweet.getId() +"\nText: "+ tweet.getText() + "\nDatum: " + parseDateSQL(tweet.getCreatedAt()) + userData);
+                        Status t = statuses[i];
+                        if (t != null) {
+                        GeoLocation loc = t.getGeoLocation();
+                        String placedesc = t.getUser().getLocation();
 
-                //SAVE TWEETS INTO DATABASE
-//                    public static void saveTweets(long id, java.sql.Date date, String message, String lang, String user,
-//                    int Follower, String location, String query){
-                    MySqlAccess.saveTweets(tweet.getId(), (parseDateSQL(tweet.getCreatedAt())), tweet.getText(),
-                            tweet.getUser().getLang(), tweet.getUser().getName(), tweet.getUser().getFollowersCount(),
-                            tweet.getUser().getLocation(), Main.searchfor);
-                    System.out.println("\n\n\n");
-                } else {
-                    System.out.println("Tweet ist Null..");
+                        long id = t.getId();
+                        int follower = t.getUser().getFollowersCount();
+                        String user = t.getUser().getScreenName();
+                        String lang = t.getUser().getLang();
+                        String msg = t.getText();
+                        Date date = (parseDateSQL(t.getCreatedAt()));
+
+
+                        if (loc != null) {
+                            Double lat = t.getGeoLocation().getLatitude();
+                            Double lon = t.getGeoLocation().getLongitude();
+                            System.out.println(i);
+                            System.out.println("USER: " + user + " with " + follower + " Follower");
+                            System.out.println("WROTE: " + msg + "    \n       (" + id +", "+ date+")");
+                            System.out.println("FROM: " + placedesc + "located at " + lat + ", " + lon + " Language: " + lang);
+                        } else {
+                            System.out.println(i);
+                            System.out.println("USER: " + user + " with " + follower + " Follower");
+                            System.out.println("WROTE: " + msg + "    \n       (" + id +", "+ date+")");
+                            if (placedesc != null && placedesc.length()>0 ) {
+                                System.out.println("FROM: " + placedesc + " Language: " + lang);
+                            }
+                            else System.out.println("Language: " + lang);
+                        }
+
+/*                        SAVE TWEETS INTO DATABASE
+                    public static void saveTweets(long id, java.sql.Date date, String message, String lang, String user,
+                    int Follower, String location, String query){*/
+                        MySqlAccess.saveTweets(t.getId(), (parseDateSQL(t.getCreatedAt())), t.getText(),
+                                t.getUser().getLang(), t.getUser().getName(), t.getUser().getFollowersCount(),
+                                t.getUser().getLocation(), Main.searchfor);
+                        System.out.println("\n\n\n");
+                    } else
+                        System.out.println("Tweet ist Null..");
+                 i++;
                 }
-                System.out.println("Number of Tweets in lap "+ j +": "+ i);
-                if (++j < requests) {
+
+                if (++j < requests)
+
+                {
                     // call a new tweetzAnalysis.Timer Thread that will signal the update method
                     // (flag WAITING_FINISHED), if further Tweets
                     // can be obtained or rather the 15 minute (+ 2 safety margin!)
                     // window is over.
                     waitForMillis(17 * 60000);
-                } else {
+                } else
+
+                {
                     // close data stream to Twitter..
-                    provider.close();
+                    //provider.close();
                     System.exit(0);
-                }i++;}
-                System.out.println("\nNumber of found Tweets: "+ i);
+                }
 
                 break;
+
+
+
             case Timer.WAITING_FINISHED:
-                try {
+                try
+
+                {
                     // start loading another sample...
                     // WARNING! Do not call the loadSample method before
                     // WAITINIG_FINISHED has been signaled!
@@ -107,23 +139,28 @@ public class Main implements Observer {
                     Query query = new Query(Main.searchfor);
                     query.setLang("en");
                     provider.loadSample(query);
-                } catch (TwitterException e) {
+                } catch (
+                        TwitterException e
+                        )
+
+                {
                     // TODO Auto-generated catch block
                     System.out.println("Exception: " + e.getMessage());
                     System.out.println("Cause: " + e.getCause());
                     System.out.println("cause is rate limit exceeded: "
                             + e.exceededRateLimitation());
                 }
+
                 break;
         }
-    MySqlAccess.close();
+
+        MySqlAccess.close();
     }
 
     /**
      * Calls a new instance of tweetzAnalysis.Timer Thread, which waits for specified time.
      *
-     * @param millis
-     *            time
+     * @param millis time
      */
     private void waitForMillis(int millis) {
         Timer timer = new Timer(millis, false);
